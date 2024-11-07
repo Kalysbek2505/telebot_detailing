@@ -114,7 +114,7 @@ def handle_message(message):
 
 def run_bot():
     
-    bot.polling(none_stop=True)
+    bot.polling(non_stop=True, interval=3, timeout=10)
 
 
 if __name__ == "__main__":
