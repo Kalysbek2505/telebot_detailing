@@ -1,12 +1,10 @@
 import telebot
 import openai
 from telebot import types
-from flask import Flask, request
 import os
 import socket
 
 
-app = Flask(__name__)
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
@@ -116,19 +114,18 @@ def handle_message(message):
 
 
 
-@app.route('/' + TELEGRAM_TOKEN, methods=['POST'])
-def webhook():
-    json_str = request.get_data().decode('UTF-8')
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return '', 200
-
-
-@app.route('/')
-def index():
-    return "Telegram Bot is running!"
+def run_bot():
+    
+    bot.polling(non_stop=True, interval=3, timeout=10)
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('0.0.0.0', 10000))
+            s.listen(1)
+            print("Сокет открыт на порту 10000")
+            run_bot()  
+    except Exception as e:
+        print(f"Ошибка: {e}")
