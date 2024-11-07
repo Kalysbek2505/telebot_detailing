@@ -2,6 +2,7 @@ import telebot
 import openai
 from telebot import types
 import os
+import socket
 
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
@@ -109,4 +110,20 @@ def handle_message(message):
         response = get_response(message.text)
         bot.reply_to(message, response)
 
-bot.polling()
+
+
+def run_bot():
+    
+    bot.polling(none_stop=True)
+
+
+if __name__ == "__main__":
+    
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('0.0.0.0', 10000))
+            s.listen(1)
+            print("Сокет открыт на порту 10000")
+            run_bot()  
+    except Exception as e:
+        print(f"Ошибка: {e}")
