@@ -1,0 +1,1 @@
+web: python detailing_bot.py
